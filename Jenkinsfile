@@ -11,7 +11,6 @@ pipeline {
                 git 'git remote add origin https://github.com/cleophasmashiri/nx-module-federation-demo.git'
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 script {
