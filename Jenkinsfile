@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'git pull origin https://github.com/cleophasmashiri/nx-module-federation-demo.git'
+                git 'https://github.com/cleophasmashiri/nx-module-federation-demo.git'
             }
         }
         stage('Install Dependencies') {
