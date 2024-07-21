@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'git remote add origin https://github.com/cleophasmashiri/nx-module-federation-demo.git'
+                git 'git pull origin https://github.com/cleophasmashiri/nx-module-federation-demo.git'
             }
         }
         stage('Install Dependencies') {
