@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-repo.git'
+                git 'git remote add origin https://github.com/cleophasmashiri/nx-module-federation-demo.git'
             }
         }
 
