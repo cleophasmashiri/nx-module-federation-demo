@@ -135,13 +135,13 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            docker.image('my-mfe-nx-image').inside {
-                junit '**/test-results/*.xml'
-                archiveArtifacts artifacts: '**/dist/**', allowEmptyArchive: true
-                cleanWs()
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         docker.image('my-mfe-nx-image').inside {
+    //             junit '**/test-results/*.xml'
+    //             archiveArtifacts artifacts: '**/dist/**', allowEmptyArchive: true
+    //             cleanWs()
+    //         }
+    //     }
+    // }
 }
