@@ -42,9 +42,9 @@ pipeline {
                     for (app in affectedApps) {
                         echo "Affect app:" + app
                     }
-                    if (!affectedApps || affectedApps.length()< 1) {
-                        echo "no apps ui"
-                    }
+                    // if (!affectedApps || affectedApps.length()< 1) {
+                    //     echo "no apps ui"
+                    // }
                     
                 }
             }
