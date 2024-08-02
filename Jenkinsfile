@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'node:16' // Specify the Docker image you want to use
+        DOCKER_IMAGE = 'node:14' // Specify the Docker image you want to use
         NX_CLI = 'nx'
         DOCKER_REGISTRY = 'your-docker-registry'
     }
@@ -36,15 +36,15 @@ pipeline {
             steps {
                 script {
                     def affectedApps = docker.image('my-mfe-nx-image').inside {
-                        sh(script: "${NX_CLI} affected:apps --plain", returnStdout: true).trim()
+                        sh(script: "${NX_CLI} affected:apps --plain --base=master --head=dev", returnStdout: true).trim()
                     }
                     env.AFFECTED_APPS = affectedApps
                     for (app in affectedApps) {
                         echo "Affect app:" + app
                     }
-                    // if (!affectedApps || affectedApps.length()< 1) {
-                    //     echo "no apps ui"
-                    // }
+                    if (!affectedApps || affectedApps.length()< 1) {
+                        echo "no apps ui"
+                    }
                     
                 }
             }
@@ -142,13 +142,13 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            docker.image('my-mfe-nx-image').inside {
-                junit '**/test-results/*.xml'
-                archiveArtifacts artifacts: '**/dist/**', allowEmptyArchive: true
-                cleanWs()
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         docker.image('my-mfe-nx-image').inside {
+    //             junit '**/test-results/*.xml'
+    //             archiveArtifacts artifacts: '**/dist/**', allowEmptyArchive: true
+    //             cleanWs()
+    //         }
+    //     }
+    // }
 }
