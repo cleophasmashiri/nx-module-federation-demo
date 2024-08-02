@@ -1,12 +1,12 @@
 # Stage 1
-FROM node:20-alpine as build-step
+FROM node:16-alpine as build-step
 
 ARG APP_NAME
 
 RUN mkdir -p /app
 WORKDIR /app
 COPY ["decorate-angular-cli.js", "package*.json", "/app/"]
-RUN npm ci
+RUN npm install --force
 COPY . /app
 RUN npx nx build ${APP_NAME} --configuration=production --base-href /${APP_NAME}/
 
