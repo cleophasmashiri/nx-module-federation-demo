@@ -6,15 +6,15 @@ ARG APP_NAME
 RUN mkdir -p /app
 WORKDIR /app
 COPY ["decorate-angular-cli.js", "package*.json", "/app/"]
-RUN npm install --force
-COPY . /app
-RUN npx nx build ${APP_NAME} --configuration=production --base-href /${APP_NAME}/
+# RUN npm install --force
+# COPY . /app
+# RUN npx nx build ${APP_NAME} --configuration=production --base-href /${APP_NAME}/
 
-# Stage 2
-FROM nginx:1.22.0-alpine
+# # Stage 2
+# FROM nginx:1.22.0-alpine
 
-ARG APP_NAME
+# ARG APP_NAME
 
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build-step /app/dist/apps/${APP_NAME} /usr/share/nginx/html
-COPY nginx.default.conf /etc/nginx/conf.d/default.conf
+# RUN rm -rf /usr/share/nginx/html/*
+# COPY --from=build-step /app/dist/apps/${APP_NAME} /usr/share/nginx/html
+# COPY nginx.default.conf /etc/nginx/conf.d/default.conf

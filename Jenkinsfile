@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     docker.image('my-mfe-nx-image').inside {
-                        sh 'npm ci'
+                        sh 'npm npm install --force'
                     }
                 }
             }
