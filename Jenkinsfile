@@ -46,8 +46,8 @@ pipeline {
                             sh(script: "${NX_CLI} print-affected --target=build --plain", returnStdout: true).trim()
                         }
                         env.AFFECTED_APPS = allApps
+                        affectedApps = allApps
                     }
-                    env.AFFECTED_APPS = affectedApps
                     for (app in affectedApps) {
                         echo "Affect app:" + app
                     }
