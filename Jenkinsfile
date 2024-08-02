@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     def affectedApps = docker.image('my-mfe-nx-image').inside {
-                        sh(script: "${NX_CLI} affected:apps --plain --base=master --head=dev", returnStdout: true).trim()
+                        sh(script: "${NX_CLI} affected:apps --plain", returnStdout: true).trim()
                     }
                     if (affectedApps) {
                         env.AFFECTED_APPS = affectedApps
