@@ -9,6 +9,8 @@ COPY ["decorate-angular-cli.js", "package*.json", "/app/"]
 
 # Install Nx CLI globally
 RUN npm install -g nx
+
+RUN apt-get update && apt-get install -y git
 # RUN npm install --force
 # COPY . /app
 # RUN npx nx build ${APP_NAME} --configuration=production --base-href /${APP_NAME}/
