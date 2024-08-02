@@ -44,7 +44,6 @@ pipeline {
                     }
                     if (!affectedApps || affectedApps.length()< 1) {
                         echo "no apps ui"
-                        env.AFFECTED_APPS = ['shell', 'mfe1']
                     }
                     
                 }
