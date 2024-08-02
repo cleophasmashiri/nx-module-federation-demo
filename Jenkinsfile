@@ -35,9 +35,9 @@ pipeline {
         stage('Get Affected Apps') {
             steps {
                 script {
-                    def affectedApps = ['shell', 'mfe1']//docker.image('my-mfe-nx-image').inside {
-                    //     sh(script: "${NX_CLI} affected:apps --plain", returnStdout: true).trim()
-                    // }
+                    def affectedApps = docker.image('my-mfe-nx-image').inside {
+                        sh(script: "${NX_CLI} affected:apps --plain", returnStdout: true).trim()
+                    }
                     env.AFFECTED_APPS = affectedApps
                     for (app in affectedApps) {
                         echo "Affect app:" + app
