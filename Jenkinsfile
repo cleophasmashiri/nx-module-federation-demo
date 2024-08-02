@@ -125,7 +125,10 @@ pipeline {
                             writeFile file: "Dockerfile.${appName}", text: dockerFileContent
                             def imageName = "${DOCKER_REGISTRY}/${appName}:latest"
                             sh "docker build -t ${imageName} -f Dockerfile.${appName} ."
-                            sh "docker push ${imageName}"
+                            //sh "docker push ${imageName}"
+                            withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
+                                sh "docker login -u cleophasmashiri -p ${dockerpwd}"
+                            }
                         }
                     }
                 }
