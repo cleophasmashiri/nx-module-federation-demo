@@ -17,6 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    sh '. ~/.zprofile'
                     docker.build('my-mfe-nx-image')
                 }
             }
