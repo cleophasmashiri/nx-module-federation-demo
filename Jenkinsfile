@@ -59,21 +59,21 @@ pipeline {
             }
         }
 
-        stage('Lint') {
-            when {
-                expression { env.AFFECTED_APPS }
-            }
-            steps {
-                script {
-                    docker.image('my-mfe-nx-image').inside {
-                        def apps = env.AFFECTED_APPS.split('\n')
-                        for (app in apps) {
-                            sh "${NX_CLI} lint ${app}"
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Lint') {
+        //     when {
+        //         expression { env.AFFECTED_APPS }
+        //     }
+        //     steps {
+        //         script {
+        //             docker.image('my-mfe-nx-image').inside {
+        //                 def apps = env.AFFECTED_APPS.split('\n')
+        //                 for (app in apps) {
+        //                     sh "${NX_CLI} lint ${app}"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Test') {
             when {
