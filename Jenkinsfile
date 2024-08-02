@@ -17,7 +17,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"'
                     docker.build('my-mfe-nx-image')
                 }
             }
