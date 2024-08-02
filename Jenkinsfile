@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'node:14' // Specify the Docker image you want to use
         NX_CLI = 'nx'
-        DOCKER_REGISTRY = 'your-docker-registry'
+        DOCKER_REGISTRY = 'cleophasmashiri'
     }
 
     stages {
@@ -96,7 +96,7 @@ pipeline {
                 expression { env.AFFECTED_APPS }
             }
             steps {
-                script {
+                script { 
                     docker.image('my-mfe-nx-image').inside {
                         def apps = env.AFFECTED_APPS.split('\n')
                         for (app in apps) {
@@ -121,6 +121,10 @@ pipeline {
                             def dockerFileContent = """
                             FROM nginx:alpine
                             COPY ${appDist} /usr/share/nginx/html
+                            RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz \
+                            && tar xzvf docker-17.04.0-ce.tgz \
+                            && mv docker/docker /usr/local/bin \
+                            && rm -r docker docker-17.04.0-ce.tgz
                             """
                             writeFile file: "Dockerfile.${appName}", text: dockerFileContent
                             def imageName = "${DOCKER_REGISTRY}/${appName}:latest"
