@@ -38,14 +38,22 @@ pipeline {
                     def affectedApps = docker.image('my-mfe-nx-image').inside {
                         sh(script: "${NX_CLI} affected:apps --plain --base=master --head=dev", returnStdout: true).trim()
                     }
+                    if (affectedApps) {
+                        env.AFFECTED_APPS = affectedApps
+                    } else {
+                        echo "No affected apps detected, defaulting to all apps"
+                        def allApps = docker.image(DOCKER_IMAGE).inside {
+                            sh(script: "${NX_CLI} print-affected --target=build --plain", returnStdout: true).trim()
+                        }
+                        env.AFFECTED_APPS = allApps
+                    }
                     env.AFFECTED_APPS = affectedApps
                     for (app in affectedApps) {
                         echo "Affect app:" + app
                     }
-                    if (!affectedApps || affectedApps.length()< 1) {
+                    if (!affectedApps) {
                         echo "no apps ui"
                     }
-                    
                 }
             }
         }
