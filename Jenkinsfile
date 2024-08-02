@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker'
+    }
 
     environment {
         DOCKER_IMAGE = 'node:14' // Specify the Docker image you want to use
