@@ -45,7 +45,7 @@ pipeline {
                         // def allApps = docker.image('my-mfe-nx-image').inside {
                         //     sh(script: "${NX_CLI} print-affected --target=build --plain", returnStdout: true).trim()
                         // }
-                        def allApps = "shell" "mfe1"
+                        def allApps = "shell\nmfe1"
                         env.AFFECTED_APPS = allApps
                         affectedApps = allApps
                     }
