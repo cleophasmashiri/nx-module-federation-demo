@@ -124,22 +124,23 @@ pipeline {
                             """
                             writeFile file: "Dockerfile.${appName}", text: dockerFileContent
                             def imageName = "${DOCKER_REGISTRY}/${appName}:latest"
-                            // sh "docker build -t ${imageName} -f Dockerfile.${appName} ."
+                            sh "docker build -t ${imageName} -f Dockerfile.${appName} ."
                             //sh "docker push ${imageName}"
-                            // withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
-                            //     sh "docker login -u cleophasmashiri -p ${dockerpwd}"
-                            // }
-                            steps {
-                                dockerBuildAndPublish {
-                                    repositoryName(imageName)
-                                    tag('${GIT_REVISION,length=9}')
-                                    registryCredentials('DockerHubPwd')
-                                    forcePull(false)
-                                    forceTag(false)
-                                    createFingerprints(false)
-                                    skipDecorate()
-                                }
-                            }    
+                            withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
+                                sh "docker push ${imageName}"
+                                // sh "docker login -u cleophasmashiri -p ${dockerpwd}"
+                            }
+                            // steps {
+                            //     dockerBuildAndPublish {
+                            //         repositoryName(imageName)
+                            //         tag('${GIT_REVISION,length=9}')
+                            //         registryCredentials('DockerHubPwd')
+                            //         forcePull(false)
+                            //         forceTag(false)
+                            //         createFingerprints(false)
+                            //         skipDecorate()
+                            //     }
+                            // }    
                         }
                     }
                 }
