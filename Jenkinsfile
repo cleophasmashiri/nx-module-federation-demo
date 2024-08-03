@@ -149,7 +149,7 @@ pipeline {
                 //                 }
                             
                 // }
-                    sh: "docker.withRegistry('${DOCKER_REGISTRY}', '${DOCKER_CREDENTIALS_ID}') {
+                    sh "docker.withRegistry('${DOCKER_REGISTRY}', '${DOCKER_CREDENTIALS_ID}') {
                         // Push your Docker image
                         docker.image('${imageName}').push()
                     }"
