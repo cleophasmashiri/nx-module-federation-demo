@@ -127,8 +127,8 @@ pipeline {
                             sh "docker build -t ${imageName} -f Dockerfile.${appName} ."
                             //sh "docker push ${imageName}"
                             withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
+                                sh "docker login -u cleophasmashiri -p ${dockerpwd}"
                                 sh "docker push ${imageName}"
-                                // sh "docker login -u cleophasmashiri -p ${dockerpwd}"
                             }
                             // steps {
                             //     dockerBuildAndPublish {
