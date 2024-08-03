@@ -126,10 +126,27 @@ pipeline {
                             def imageName = "${DOCKER_REGISTRY}/${appName}:latest"
                             sh "docker build -t ${imageName} -f Dockerfile.${appName} ."
                             //sh "docker push ${imageName}"
-                            withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
-                                sh "docker login -u cleophasmashiri -p ${dockerpwd}"
-                                sh "docker push ${imageName}"
+                            // withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
+                            //     sh "docker login -u cleophasmashiri -p ${dockerpwd}"
+                            //     sh "docker push ${imageName}"
+                            // }
+                            withCredentials([usernamePassword(credentialsId: 'DockerHubPwd', 
+                                                 usernameVariable: 'DOCKER_USERNAME', 
+                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
+                                script {
+                                    // Login to Docker registry
+                                    sh """
+                                        echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password-stdin
+                                    """
+                                    
+                                    // Push the Docker image
+                                    sh "docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:latest"
+                                    
+                                    // Logout from Docker registry
+                                    sh "docker logout ${DOCKER_REGISTRY}"
+                                }
                             }
+                }
                             // steps {
                             //     dockerBuildAndPublish {
                             //         repositoryName(imageName)
