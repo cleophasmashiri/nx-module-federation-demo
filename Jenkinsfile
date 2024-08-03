@@ -145,7 +145,7 @@ pipeline {
                                     // Logout from Docker registry
                                     sh "docker logout ${DOCKER_REGISTRY}"
                                 }
-                            }
+                            
                 }
                             // steps {
                             //     dockerBuildAndPublish {
