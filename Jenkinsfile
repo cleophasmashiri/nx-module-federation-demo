@@ -140,7 +140,8 @@ pipeline {
                                     """
                                     
                                     // Push the Docker image
-                                    sh "docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:latest"
+                                    sh "docker push ${imageName}"
+                                    //${DOCKER_REGISTRY}/${IMAGE_NAME}:latest"
                                     
                                     // Logout from Docker registry
                                     sh "docker logout ${DOCKER_REGISTRY}"
