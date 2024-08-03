@@ -4,7 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'node:14' // Specify the Docker image you want to use
         NX_CLI = 'nx'
-        DOCKER_REGISTRY = 'https://registry.hub.docker.com/cleophasmashiri'
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
+        DOCKER_CREDENTIALS_ID = 'DockerHubPwd'
     }
 
     stages {
@@ -123,31 +124,35 @@ pipeline {
                             COPY ${appDist} /usr/share/nginx/html
                             """
                             writeFile file: "Dockerfile.${appName}", text: dockerFileContent
-                            def imageName = "${DOCKER_REGISTRY}/${appName}:latest"
+                            def imageName = "cleophasmashiri/${appName}:latest"
                             sh "docker build -t ${imageName} -f Dockerfile.${appName} ."
                             //sh "docker push ${imageName}"
                             // withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
                             //     sh "docker login -u cleophasmashiri -p ${dockerpwd}"
                             //     sh "docker push ${imageName}"
                             // }
-                            withCredentials([usernamePassword(credentialsId: 'DockerHubPwd', 
-                                                 usernameVariable: 'DOCKER_USERNAME', 
-                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
-                                script {
-                                    // Login to Docker registry
-                                    sh """
-                                        echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
-                                    """
+                //             withCredentials([usernamePassword(credentialsId: 'DockerHubPwd', 
+                //                                  usernameVariable: 'DOCKER_USERNAME', 
+                //                                  passwordVariable: 'DOCKER_PASSWORD')]) {
+                //                 script {
+                //                     // Login to Docker registry
+                //                     sh """
+                //                         echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+                //                     """
                                     
-                                    // Push the Docker image
-                                    sh "docker push ${imageName}"
-                                    //${DOCKER_REGISTRY}/${IMAGE_NAME}:latest"
+                //                     // Push the Docker image
+                //                     sh "docker push ${imageName}"
+                //                     //${DOCKER_REGISTRY}/${IMAGE_NAME}:latest"
                                     
-                                    // Logout from Docker registry
-                                    sh "docker logout ${DOCKER_REGISTRY}"
-                                }
+                //                     // Logout from Docker registry
+                //                     sh "docker logout ${DOCKER_REGISTRY}"
+                //                 }
                             
-                }
+                // }
+                    sh: "docker.withRegistry('${DOCKER_REGISTRY}', '${DOCKER_CREDENTIALS_ID}') {
+                        // Push your Docker image
+                        docker.image('${imageName}').push()
+                    }"
                             // steps {
                             //     dockerBuildAndPublish {
                             //         repositoryName(imageName)
