@@ -129,15 +129,17 @@ pipeline {
                             // withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerpwd')]) {
                             //     sh "docker login -u cleophasmashiri -p ${dockerpwd}"
                             // }
-                            dockerBuildAndPublish {
-                                repositoryName(imageName)
-                                tag('${GIT_REVISION,length=9}')
-                                registryCredentials('DockerHubPwd')
-                                forcePull(false)
-                                forceTag(false)
-                                createFingerprints(false)
-                                skipDecorate()
-                            }
+                            steps {
+                                dockerBuildAndPublish {
+                                    repositoryName(imageName)
+                                    tag('${GIT_REVISION,length=9}')
+                                    registryCredentials('DockerHubPwd')
+                                    forcePull(false)
+                                    forceTag(false)
+                                    createFingerprints(false)
+                                    skipDecorate()
+                                }
+                            }    
                         }
                     }
                 }
