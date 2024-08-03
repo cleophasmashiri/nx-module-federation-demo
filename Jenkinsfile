@@ -149,7 +149,7 @@ pipeline {
                 //                 }
                             
                 // }
-                    sh "docker.withRegistry(${DOCKER_REGISTRY}, ${DOCKER_CREDENTIALS_ID}) {docker.image(${imageName}).push()}"
+                    //sh "docker.withRegistry(${DOCKER_REGISTRY}, ${DOCKER_CREDENTIALS_ID}) {docker.image(${imageName}).push()}"
                             // steps {
                             //     dockerBuildAndPublish {
                             //         repositoryName(imageName)
