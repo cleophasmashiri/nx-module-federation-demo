@@ -93,9 +93,9 @@ pipeline {
         // }
 
         stage('Build') {
-            // when {
-            //     expression { env.AFFECTED_APPS }
-            // }
+            when {
+                expression { env.AFFECTED_APPS }
+            }
             steps {
                 script { 
                     docker.image('my-mfe-nx-image').inside {
@@ -135,9 +135,9 @@ pipeline {
         }
 
         stage('Deploy') {
-            when {
-                expression { env.BRANCH_NAME == 'master' && env.AFFECTED_APPS }
-            }
+            // when {
+            //     expression { env.BRANCH_NAME == 'master' && env.AFFECTED_APPS }
+            // }
             steps {
                 script {
                     docker.image('my-mfe-nx-image').inside {
