@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'node:14' // Specify the Docker image you want to use
         NX_CLI = 'nx'
-        DOCKER_REGISTRY = 'cleophasmashiri'
+        DOCKER_REGISTRY = 'https://registry.hub.docker.com/cleophasmashiri'
     }
 
     stages {
