@@ -122,6 +122,8 @@ pipeline {
                             def dockerFileContent = """
                             FROM nginx:alpine
                             COPY ${appDist} /usr/share/nginx/html
+                            EXPOSE 3000
+                            CMD ["nginx", "-g", "daemon off;"]
                             """
                             writeFile file: "Dockerfile.${appName}", text: dockerFileContent
                             def imageName = "cleophasmashiri/${appName}:latest"
