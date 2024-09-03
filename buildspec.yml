@@ -2,7 +2,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - npm install
+      - npm install --force
   build:
     commands:
       - npm run affected:build -- --base=origin/main --parallel --prod
