@@ -2,6 +2,7 @@ version: 0.2
 env:
   variables:
     S3_BUCKET_NAME: "my-hello-101-app"
+    affected_apps: ["shell", "mfe1"]
 phases:
   install:
     commands:
@@ -15,7 +16,6 @@ phases:
       - echo "Installing project dependencies..."
       - npm install --force
       - echo "Checking if S3 bucket exists..."
-      - affected_apps=['shell', 'mfe1']
       - |
         for app in $affected_apps; do
           echo "Creating bucket for $app to S3..."
