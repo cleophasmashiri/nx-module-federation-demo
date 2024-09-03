@@ -2,7 +2,17 @@ version: 0.2
 phases:
   install:
     commands:
+      - echo "Installing Node.js..."
+      - nvm install 16 # or the Node.js version you require
+      - echo "Installing Nx globally..."
+      - npm install -g nx@latest --force  
+      - echo "Installing project dependencies..."
       - npm install --force
+  pre_build:
+      - echo "Running linting..."
+      - nx lint app1 # Replace 'app1' with your app name
+      - echo "Running unit tests..."
+      - nx test app1 --code-coverage # Replace 'app1' with your app name, and optionally generate coverage report    
   build:
     commands:
       - npm run affected:build -- --base=origin/main --parallel --prod

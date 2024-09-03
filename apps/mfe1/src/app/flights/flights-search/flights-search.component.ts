@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { AuthService } from '@demo/auth-lib';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-flights-search',
@@ -8,7 +8,6 @@ import { AuthService } from '@demo/auth-lib';
 export class FlightsSearchComponent {
 
   constructor(private authService: AuthService) { }
-
 
 userName = this.authService.userName;
 
