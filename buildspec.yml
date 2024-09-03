@@ -8,8 +8,8 @@ phases:
       - npm run affected:build -- --base=origin/main --parallel --prod
   post_build:
     commands:
-      - aws s3 sync dist/apps/app1 s3://shell-app-101 --delete
-      - aws s3 sync dist/apps/app2 s3://mfe-app-101 --delete
+      - aws s3 sync dist/apps/shell s3://shell-app-101 --delete
+      - aws s3 sync dist/apps/mfe1 s3://mfe-app-101 --delete
 artifacts:
   files:
     - '**/*'
