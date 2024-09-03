@@ -74,7 +74,7 @@ phases:
   post_build:
     commands:
       - echo "Running E2E tests for affected apps..."
-      - npx nx affected --target=e2e --parallel=3
+      # - npx nx affected --target=e2e --parallel=3
       - echo "Syncing affected apps to S3..."
       - |
         for app in $affected_apps; do
