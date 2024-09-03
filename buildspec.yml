@@ -42,7 +42,7 @@ phases:
     commands:  
       - echo "Determining affected apps..."
       - affected_apps=$(npx nx affected:apps --plain)
-      - echo "Affected apps: $affected_apps"
+      - echo "Affected apps $affected_apps"
       - echo "Running linting for affected apps..."
       - npx nx affected --target=lint --parallel=3
       - echo "Running unit tests for affected apps..."
