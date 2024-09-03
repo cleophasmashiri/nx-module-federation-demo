@@ -1,25 +1,83 @@
 version: 0.2
+env:
+  variables:
+    S3_BUCKET_NAME: "my-hello-101-app"
 phases:
   install:
     commands:
       - echo "Installing Node.js..."
       - nvm install 16 # or the Node.js version you require
       - echo "Installing Nx globally..."
-      - npm install -g nx@latest --force  
+      - npm install -g nx@14.2.4 --force  
       - echo "Installing project dependencies..."
       - npm install --force
+      - echo "Checking if S3 bucket exists..."
+      - |
+        if ! aws s3 ls "s3://$S3_BUCKET_NAME" 2>&1 | grep -q 'NoSuchBucket'; then
+          echo "Bucket already exists, skipping creation."
+        else
+          echo "Bucket does not exist, creating now..."
+          aws s3 mb s3://$S3_BUCKET_NAME
+          
+          # Set the bucket policy to make it public
+          aws s3api put-bucket-policy --bucket $S3_BUCKET_NAME --policy '{
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::$S3_BUCKET_NAME/*"
+              }
+            ]
+          }'
+          
+          # Enable static website hosting
+          aws s3 website s3://$S3_BUCKET_NAME/ --index-document index.html --error-document error.html
+        fi
   pre_build:
-      - echo "Running linting..."
-      - nx lint app1 # Replace 'app1' with your app name
-      - echo "Running unit tests..."
-      - nx test app1 --code-coverage # Replace 'app1' with your app name, and optionally generate coverage report    
+      - echo "Determining affected apps..."
+      - affected_apps=$(npx nx affected:apps --plain)
+      - echo "Affected apps: $affected_apps"
+      - echo "Running linting for affected apps..."
+      - npx nx affected --target=lint --parallel=3
+      - echo "Running unit tests for affected apps..."
+      - npx nx affected --target=test --parallel=3 --code-coverage
   build:
     commands:
-      - npm run affected:build -- --base=origin/main --parallel --prod
+      - echo "Building affected apps..."
+      - npx nx affected --target=build --parallel=3
   post_build:
     commands:
-      - aws s3 sync dist/apps/shell s3://shell-app-101 --delete
-      - aws s3 sync dist/apps/mfe1 s3://mfe-app-101 --delete
+      - echo "Running E2E tests for affected apps..."
+      - npx nx affected --target=e2e --parallel=3
+      - echo "Syncing affected apps to S3..."
+      - |
+        for app in $affected_apps; do
+          echo "Running E2E tests for $app..."
+          npx nx e2e ${app}-e2e --output-style=json > reports/e2e/${app}-e2e-report.json
+        done 
+        for app in $affected_apps; do
+          echo "Syncing $app to S3..."
+          aws s3 sync dist/apps/$app s3://$S3_BUCKET_NAME/$app --delete
+        done
 artifacts:
   files:
     - '**/*'
+  discard-paths: yes
+  base-directory: dist/ # Modify based on your project structure and which artifacts you want to retain
+
+cache:
+  paths:
+    - node_modules/**/* # Caches dependencies to speed up subsequent builds
+
+reports:
+  junit:
+    files:
+      - junit.xml # Include if you're generating a JUnit XML report
+  coverage:
+    files:
+      - coverage/**/* # Include if you're generating a coverage report
+  e2e:
+    files:
+      - reports/e2e/*.json
