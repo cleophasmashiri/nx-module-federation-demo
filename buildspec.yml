@@ -39,6 +39,7 @@ phases:
           fi
         done
   pre_build:
+    commands:  
       - echo "Determining affected apps..."
       - affected_apps=$(npx nx affected:apps --plain)
       - echo "Affected apps: $affected_apps"
