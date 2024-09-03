@@ -136,24 +136,40 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Deploy') {
-            // when {
-            //     expression { env.BRANCH_NAME == 'master' && env.AFFECTED_APPS }
-            // }
             steps {
-                script {
-                    docker.image('my-mfe-nx-image').inside {
+                withCredentials([usernamePassword(credentialsId: 'aws-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    script {
+                        sh "jenkins/scripts/create_ec2_with_docker.sh"
                         def apps = env.AFFECTED_APPS.split('\n')
                         for (app in apps) {
                             def imageName = "${DOCKER_REGISTRY}/${app}:latest"
                             // Here you would add the script to deploy the Docker images to your servers
-                            sh "deploy_script.sh ${imageName}"
+                            sh "docker run -d -p ${PORTS[app]}:${PORTS[app]} --name ${app} ${imageName}"
                         }
                     }
                 }
             }
         }
+
+        // stage('Deploy') {
+        //     // when {
+        //     //     expression { env.BRANCH_NAME == 'master' && env.AFFECTED_APPS }
+        //     // }
+        //     steps {
+        //         script {
+        //             docker.image('my-mfe-nx-image').inside {
+        //                 def apps = env.AFFECTED_APPS.split('\n')
+        //                 for (app in apps) {
+        //                     def imageName = "${DOCKER_REGISTRY}/${app}:latest"
+        //                     // Here you would add the script to deploy the Docker images to your servers
+        //                     sh "deploy_script.sh ${imageName}"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     // post {
