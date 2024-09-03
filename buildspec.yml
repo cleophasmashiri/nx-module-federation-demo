@@ -15,6 +15,7 @@ phases:
       - echo "Installing project dependencies..."
       - npm install --force
       - echo "Checking if S3 bucket exists..."
+      - affected_apps=['shell', 'mfe1']
       - |
         for app in $affected_apps; do
           echo "Creating bucket for $app to S3..."
@@ -44,16 +45,31 @@ phases:
   pre_build:
     commands:  
       - echo "Determining affected apps..."
-      - affected_apps=$(npx nx affected:apps --plain)
+      # - affected_apps=$(npx nx affected:apps --plain)
       - echo "Affected apps $affected_apps"
       - echo "Running linting for affected apps..."
-      - npx nx affected --target=lint --parallel=3
+      # - npx nx affected --target=lint --parallel=3
+      - |
+        for app in $affected_apps; do 
+          echo "Running LINT for $app..."
+          npx nx lint $app
+        done  
       - echo "Running unit tests for affected apps..."
-      - npx nx affected --target=test --parallel=3 --code-coverage
+      - |
+        for app in $affected_apps; do 
+          echo "Running TEST for $app..."
+          npx nx test $app
+        done  
+      # - npx nx affected --target=test --parallel=3 --code-coverage
   build:
     commands:
       - echo "Building affected apps..."
-      - npx nx affected --target=build --parallel=3
+      - |
+        for app in $affected_apps; do 
+          echo "Running TEST for $app..."
+          npx nx build $app
+        done  
+      # - npx nx affected --target=build --parallel=3
   post_build:
     commands:
       - echo "Running E2E tests for affected apps..."
