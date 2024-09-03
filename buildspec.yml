@@ -85,11 +85,11 @@ phases:
           echo "Syncing $app to S3..."
           aws s3 sync dist/apps/$app s3://$S3_BUCKET_NAME-$app --delete
         done
-artifacts:
-  files:
-    - '**/*'
-  discard-paths: yes
-  base-directory: dist/ # Modify based on your project structure and which artifacts you want to retain
+# artifacts:
+#   files:
+#     - '**/*'
+#   discard-paths: yes
+#   base-directory: dist/ # Modify based on your project structure and which artifacts you want to retain
 
 cache:
   paths:
