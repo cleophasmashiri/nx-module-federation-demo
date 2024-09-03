@@ -13,28 +13,31 @@ phases:
       - npm install --force
       - echo "Checking if S3 bucket exists..."
       - |
-        if ! aws s3 ls "s3://$S3_BUCKET_NAME" 2>&1 | grep -q 'NoSuchBucket'; then
-          echo "Bucket already exists, skipping creation."
-        else
-          echo "Bucket does not exist, creating now..."
-          aws s3 mb s3://$S3_BUCKET_NAME
-          
-          # Set the bucket policy to make it public
-          aws s3api put-bucket-policy --bucket $S3_BUCKET_NAME --policy '{
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Principal": "*",
-                "Action": "s3:GetObject",
-                "Resource": "arn:aws:s3:::$S3_BUCKET_NAME/*"
-              }
-            ]
-          }'
-          
-          # Enable static website hosting
-          aws s3 website s3://$S3_BUCKET_NAME/ --index-document index.html --error-document error.html
-        fi
+        for app in $affected_apps; do
+          echo "Creating bucket for $app to S3..."
+          if ! aws s3 ls "s3://$S3_BUCKET_NAME-$app" 2>&1 | grep -q 'NoSuchBucket'; then
+            echo "Bucket already exists, skipping creation."
+          else
+            echo "Bucket does not exist, creating now..."
+            aws s3 mb s3://$S3_BUCKET_NAME-$app
+            
+            # Set the bucket policy to make it public
+            aws s3api put-bucket-policy --bucket s3://$S3_BUCKET_NAME-$app --policy '{
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::$S3_BUCKET_NAME-$app/*"
+                }
+              ]
+            }'
+            
+            # Enable static website hosting
+            aws s3 website s3://$S3_BUCKET_NAME-$app/ --index-document index.html --error-document error.html
+          fi
+        done
   pre_build:
       - echo "Determining affected apps..."
       - affected_apps=$(npx nx affected:apps --plain)
@@ -59,7 +62,7 @@ phases:
         done 
         for app in $affected_apps; do
           echo "Syncing $app to S3..."
-          aws s3 sync dist/apps/$app s3://$S3_BUCKET_NAME/$app --delete
+          aws s3 sync dist/apps/$app s3://$S3_BUCKET_NAME-$app --delete
         done
 artifacts:
   files:
