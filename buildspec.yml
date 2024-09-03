@@ -78,11 +78,11 @@ phases:
       # - npx nx affected --target=e2e --parallel=3
       - echo "Syncing affected apps to S3..."
       - aws s3 sync dist/apps/shell s3://${S3_BUCKET_NAME} --delete
-      # - |
-      #   for app in $affected_apps; do
-      #     echo "Running E2E tests for $app..."
-      #     npx nx e2e ${app}-e2e --output-style=json > reports/e2e/${app}-e2e-report.json
-      #   done 
+      - |
+        for app in $affected_apps; do
+          echo "Running E2E tests for $app..."
+          npx nx e2e ${app}-e2e --output-style=json > reports/e2e/${app}-e2e-report.json
+        done 
       #   for app in $affected_apps; do
       #     echo "Syncing $app to S3..."
       #     aws s3 sync dist/apps/$app s3://${S3_BUCKET_NAME}-${app} --delete
